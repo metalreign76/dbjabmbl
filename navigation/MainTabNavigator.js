@@ -3,9 +3,10 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon_Entypo from '../components/TabBarIcon_Entypo';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import NewsScreen from '../screens/NewsScreen';
+import ScheduleScreen from '../screens/ScheduleScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -16,45 +17,41 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
+      name={Platform.OS === 'ios' ? 'ios-home' : 'md-home'}
     />
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const NewsStack = createStackNavigator({
+  News: NewsScreen,
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+NewsStack.navigationOptions = {
+  tabBarLabel: 'News',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
+    <TabBarIcon_Entypo
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+      name='news'
     />
   ),
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+const ScheduleStack = createStackNavigator({
+  Schedule: ScheduleScreen,
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+ScheduleStack.navigationOptions = {
+  tabBarLabel: 'Schedule',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+      name={Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar'}
     />
   ),
 };
 
 export default createBottomTabNavigator({
   HomeStack,
-  LinksStack,
-  SettingsStack,
+  NewsStack,
+  ScheduleStack,
 });
