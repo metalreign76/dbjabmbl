@@ -1,9 +1,12 @@
 import React from 'react';
-import {FlatList, Text, View, StyleSheet } from 'react-native';
+import { WebView, ActivityIndicator, Platform } from 'react-native';
+import { TouchableHighlight, FlatList, Text, View, StyleSheet } from 'react-native';
+import { Image, Card, Overlay } from 'react-native-elements'
 import wpAPI from 'wpapi'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getPosts } from '../actions/postsAction';
+import { getPosts, showNewsItem, hideNewsItem } from '../actions/postsAction';
+import Colors from '../constants/Colors';
 
 var wp, titlesList;
 
@@ -28,13 +31,54 @@ class NewsScreen extends React.Component {
     })
   }
 
+  showNews = (newsItem) => {
+    this.props.showNewsItem(newsItem);
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.props.posts.titles}
-          renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-        />      
+      <View>
+        <FlatList style={styles.newsList}
+          data={this.props.posts.news}
+          ListEmptyComponent={<ActivityIndicator size="large" color={Colors.tintColor} />}
+          renderItem={({item}) => (
+            <TouchableHighlight onPress={()=> this.showNews(item.fullPost)}>
+            <Card 
+              containerStyle={styles.container} 
+              key={item.key}
+            >
+            {
+              <View style={styles.containerView}>
+                <View style={styles.titlesView}>
+                    <Image
+                      source={{ uri: item.featuredImage }}
+                      style={styles.newsImage}
+                      PlaceholderContent={<ActivityIndicator />}
+                    />
+                  <Text style={styles.cardTitle}> 
+                    {item.title}
+                  </Text>
+                </View>
+                <View style={styles.excerptView}>
+                  <Text style={styles.cardExcerpt}> 
+                    {item.excerpt}...
+                  </Text>
+                </View>
+              </View>
+            }
+            </Card>
+            </TouchableHighlight>
+          )}
+        />
+        <Overlay 
+          isVisible={this.props.posts.newsItemVisible}
+          fullScreen={true}
+          onBackdropPress={() => this.props.hideNewsItem()}
+        >
+          <WebView
+            source={{ html: this.props.posts.selectedNewsItem}}
+            />
+        </Overlay>
       </View>
     );
   }
@@ -42,14 +86,32 @@ class NewsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingTop: 15,
     backgroundColor: '#fff',
+    flex: 1
   },
-  item: {
+  newsList: {
+    paddingTop: 10
+  },
+  containerView: {
+    flexDirection: 'column'
+  },
+  titlesView: {
+    flexDirection: 'row'
+  },
+  excerptView: {
+    flexDirection: 'row'
+  },
+  cardTitle: {
     padding: 10,
-    fontSize: 18,
-    height: 44,
+    fontSize: 18
+  },
+  cardExcerpt: {
+    paddingTop: 10
+  },
+  newsImage: {
+    width: 50,
+    height: 50
   }
 });
 
@@ -61,6 +123,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
     getPosts,
+    showNewsItem,
+    hideNewsItem
   }, dispatch)
 );
 

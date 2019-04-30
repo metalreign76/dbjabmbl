@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 export default class ScheduleScreen extends React.Component {
   static navigationOptions = {
-    title: 'Gig Guide',
+    title: 'Gig Guide ',
   };
 
   render() {
