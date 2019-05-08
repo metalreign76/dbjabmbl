@@ -1,12 +1,18 @@
 import { combineReducers } from 'redux';
-import stripHtml from "string-strip-html";
+import stripHtml from 'string-strip-html';
+import xml2JSON from 'react-xml-parser'
 
 const imageReductionPercantage=20;
 
 const INITIAL_STATE = {
-  news: [],
-  newsItemVisible: false,
-  selectedNewsItem: null
+    newsIsLoaded: false,
+    newsData: [],
+    newsItemVisible: false,
+    newsSelectedItem: null,
+    eventIsLoaded: false,
+    eventData: [],
+    eventItemVisible: false,
+    eventSelectedItem: null,
 };
 
 const decodeChar = (match) => {
@@ -27,7 +33,7 @@ extractImage = (postContent) => {
   return imageURI;
 }
 
-const postsReducer = (state = INITIAL_STATE, action) => {
+const dbjabReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'GET_POSTS':
 
@@ -44,14 +50,18 @@ const postsReducer = (state = INITIAL_STATE, action) => {
           });
       });
 
-      const newState = { ...state, news: updatedNews };
+      const newState = { 
+        ...state, 
+        newsIsLoaded: true,
+        newsData: updatedNews
+      }
       return newState;
 
     case 'SHOW_NEWS_ITEM':
       const newStateVis = { 
         ...state, 
         newsItemVisible: true, 
-        selectedNewsItem: action.payload 
+        newsSelectedItem: action.payload 
       };
       return newStateVis;
 
@@ -59,11 +69,31 @@ const postsReducer = (state = INITIAL_STATE, action) => {
       const newStateInVis = { ...state, newsItemVisible: false };
       return newStateInVis;
 
+    case 'GET_EVENTS':
+      const newEventState = { 
+        ...state, 
+        eventIsLoaded: true,
+        eventData: action.payload
+      }
+      return newEventState;
+
+    case 'SHOW_EVENT_ITEM':
+      const newEventStateVis = { 
+        ...state, 
+        eventItemVisible: true, 
+        eventSelectedItem: action.payload 
+      };
+      return newEventStateVis;
+
+    case 'HIDE_EVENT_ITEM':
+      const newEventStateInVis = { ...state, eventItemVisible: false };
+      return newEventStateInVis;
+
     default:
       return state
   }
 };
 
 export default combineReducers({
-  posts: postsReducer
+  dbjab: dbjabReducer
 });

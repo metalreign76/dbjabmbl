@@ -4,9 +4,9 @@ import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import postsReducer from './reducers/postsReducer';
+import dbjabReducer from './reducers/dbjabReducer';
 
-const store = createStore(postsReducer);
+const store = createStore(dbjabReducer);
 
 export default class App extends React.Component {
   state = {

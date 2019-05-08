@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { getPosts, showNewsItem, hideNewsItem } from '../actions/postsAction';
 import Colors from '../constants/Colors';
 
-var wp, titlesList;
+var wp;
 
 class NewsScreen extends React.Component {
   static navigationOptions = {
@@ -39,7 +39,7 @@ class NewsScreen extends React.Component {
     return (
       <View>
         <FlatList style={styles.newsList}
-          data={this.props.posts.news}
+          data={this.props.dbjab.newsData}
           ListEmptyComponent={<ActivityIndicator size="large" color={Colors.tintColor} />}
           renderItem={({item}) => (
             <TouchableHighlight onPress={()=> this.showNews(item.fullPost)}>
@@ -71,12 +71,12 @@ class NewsScreen extends React.Component {
           )}
         />
         <Overlay 
-          isVisible={this.props.posts.newsItemVisible}
+          isVisible={this.props.dbjab.newsItemVisible}
           fullScreen={true}
           onBackdropPress={() => this.props.hideNewsItem()}
         >
           <WebView
-            source={{ html: this.props.posts.selectedNewsItem}}
+            source={{ html: this.props.dbjab.newsSelectedItem}}
             />
         </Overlay>
       </View>
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const { posts } = state
-  return { posts }
+  const { dbjab } = state
+  return { dbjab }
 };
 
 const mapDispatchToProps = dispatch => (
