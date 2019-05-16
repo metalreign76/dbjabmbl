@@ -1,59 +1,34 @@
 import React from 'react';
-import { TouchableHighlight, FlatList, Text, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
 import { WebView, ActivityIndicator, Platform } from 'react-native';
 import { Image, Card, Overlay } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getEvents, showEventItem, hideEventItem } from '../actions/eventsAction';
-import AWS from 'aws-sdk/clients/lambda';
-import Colors from '../constants/Colors';
-
-var lambda = new AWS({
-  region: 'eu-west-1',
-  accessKeyId: 'AKIAR7ILU4G7WDV6Y5JL',
-  secretAccessKey: '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'
-});
-var iCalURL = 'http://www.dannyboyjazzandblues.com/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&ai1ec_cat_ids=516&xml=true';
+import { showEventItem, hideEventItem } from '../actions/eventsAction';
+import equal from 'fast-deep-equal';
 
 class ScheduleScreen extends React.Component {
   static navigationOptions = {
     title: 'Gig Guide ',
+    headerTintColor: '#1D6292'
   };
 
   constructor(props) {
     super(props);
   }
-
-  componentWillMount() {
-    var params = {
-
-      FunctionName: 'arn:aws:lambda:eu-west-1:135852777919:function:dbJabEvents'
-    }
-
-    lambda.invoke(params).promise()
-    .then(results => {
-      var parsedResults = JSON.parse(results.Payload)
-      this.props.getEvents(parsedResults.body.data);
-    })
-    .catch(err => {
-      console.log("ERROR:", err)
-    })
-  }
-
   
-  showEvent = (eventItem) => {
+  showEvent(eventItem) {
     this.props.showEventItem(eventItem);
   }
 
-
   render() {
     return (
-      <View>
+      <View style={styles.pageContainer}>
       <FlatList style={styles.eventList}
         data={this.props.dbjab.eventData}
-        ListEmptyComponent={<ActivityIndicator size="large" color={Colors.tintColor} />}
+        ListEmptyComponent={<ActivityIndicator size="large" color='#fff' />}
         renderItem={({item}) => (
-          <TouchableHighlight onPress={()=> this.showEvent(item.eventDescription)}>
+          <TouchableOpacity onPress={()=> this.showEvent(item.eventDescription)}>
           <Card 
             containerStyle={styles.container} 
             key={item.key}
@@ -72,13 +47,13 @@ class ScheduleScreen extends React.Component {
               </View>
               <View style={styles.excerptView}>
                 <Text style={styles.cardExcerpt}> 
-                  {item.eventDay} {item.eventStart} - {item.eventEnd} @ {item.eventVenue}
+                  {item.eventDay} {item.eventStartTime} - {item.eventEndTime} @ {item.eventVenue}
                 </Text>
               </View>
             </View>
           }
           </Card>
-          </TouchableHighlight>
+          </TouchableOpacity>
 
         )}
       />
@@ -98,12 +73,11 @@ class ScheduleScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 15,
     backgroundColor: '#fff',
     flex: 1
   },
   eventList: {
-    paddingTop: 10
+    paddingTop: 5
   },
   containerView: {
     flexDirection: 'column'
@@ -116,18 +90,22 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     padding: 10,
-    fontSize: 16
+    fontSize: 16,
+    color: '#1D6292'
   },
   cardExcerpt: {
-    paddingTop: 10
+    paddingTop: 10,
+    color: '#1D6292'
   },
   eventImage: {
     width: 50,
     height: 50
+  },
+  pageContainer: {
+    backgroundColor: '#1D6292',
+    height: '100%'
   }
 });
-
-
 
 const mapStateToProps = (state) => {
   const { dbjab } = state
@@ -136,7 +114,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    getEvents,
     showEventItem,
     hideEventItem
   }, dispatch)

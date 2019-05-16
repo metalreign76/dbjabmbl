@@ -14,6 +14,9 @@ const HomeStack = createStackNavigator({
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
+  tabBarOptions: { 
+    activeTintColor: '#1D6292'
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -28,6 +31,9 @@ const NewsStack = createStackNavigator({
 
 NewsStack.navigationOptions = {
   tabBarLabel: 'News',
+  tabBarOptions: { 
+    activeTintColor: '#1D6292'
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon_Entypo
       focused={focused}
@@ -42,6 +48,9 @@ const ScheduleStack = createStackNavigator({
 
 ScheduleStack.navigationOptions = {
   tabBarLabel: 'Schedule',
+  tabBarOptions: { 
+    activeTintColor: '#1D6292'
+  },
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

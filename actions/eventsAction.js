@@ -5,6 +5,19 @@ export const getEvents = eventsJSON => (
     }
 );
 
+export const resetEvents = eventsJSON => (
+  {
+    type: 'RESET_EVENTS'
+  }
+);
+
+
+export const problemWithEvents = eventsJSON => (
+  {
+    type: 'PROBLEM_EVENTS'
+  }
+);
+
 export const showEventItem = selectedEventItem => (
   {
       type: 'SHOW_EVENT_ITEM',

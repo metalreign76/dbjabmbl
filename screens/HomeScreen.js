@@ -2,187 +2,182 @@ import React from 'react';
 import {
   Image,
   Platform,
-  ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  SectionList,
+  ActivityIndicator
 } from 'react-native';
-import { WebBrowser } from 'expo';
+import { Button, Card, ListItem } from 'react-native-elements';
+import { Icon } from 'expo';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getEvents, resetEvents, problemWithEvents } from '../actions/eventsAction';
+import Colors from '../constants/Colors';
 
-import { MonoText } from '../components/StyledText';
+const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
+
+  constructor(props) {
+    super(props);
+
+    this.loadEvents = this.loadEvents.bind(this);
+    this.resetEvents = this.resetEvents.bind(this);
+  }
+
+  componentWillMount() {
+    this.loadEvents();
+  }
+
+  resetEvents() {
+    console.log("Resetting...")
+    this.props.resetEvents();
+    if(this.props.dbjab.eventsError) {
+      this.loadEvents()
+    }
+    else {
+      console.log("Updating...")
+      this.props.getEvents(this.props.dbjab.eventData);
+    }
+  }
+  
+  loadEvents() {
+    console.log("Getting events")
+    axios.get(getEventsAPI)
+    .then(results => {
+      this.props.getEvents(results.data.events);
+    })
+    .catch(err => {
+      console.log("ERROR:", err)
+      this.props.problemWithEvents();
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Hello World
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
+        <View style={styles.welcomeContainer}>
+          <Image
+            source={require('../assets/images/DannyBoyHome.png')}
+            style={styles.welcomeImage}
+          />
+        </View>
+        <View style={styles.reloadEventsPanel}>
+          <Button
+            containerStyle={styles.refreshEventsButtonContainer}
+            title="Update Whats On Now/Next"
+            titleStyle={styles.homePageButtonTitle}
+            buttonStyle={styles.refreshButton}
+            icon={
+              <Icon.Ionicons
+                name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
+                size={26}
+                style={{ marginBottom: -2, paddingLeft: 10 }}
+                color={Colors.noticeText}
+              />
+            }
+            iconRight
+            onPress={this.resetEvents}          
+          />
+        </View>
+        <View style={styles.eventList}>
+        <SectionList
+          ListEmptyComponent={<ActivityIndicator  size="large" color="#1D6292" />}
+          sections={this.props.dbjab.eventsOnNowOnNext}
+          stickySectionHeadersEnabled={true}
+          renderSectionHeader={({section}) => {
+            return (
+              <View>
+                <Text style={styles.homePageSectionTitles}>{section.title}</Text>
+              </View>
+            )
+          }}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.OnNoworOnNext}>
+              <ListItem 
+                  leftIcon={{ 
+                    type: 'ionicon',
+                    name: Platform.OS === 'ios' ? 'ios-microphone' : 'md-microphone',
+                    color: '#1D6292'
+                  }}
+                  title={item.gigDetails} 
+                  titleStyle={styles.OnNoworOnNext}
+              />
+              </View>
+            )
+        }}/>
         </View>
       </View>
     );
   }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 30,
+    flexDirection: 'column'
   },
   welcomeContainer: {
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    height: 200,
     resizeMode: 'contain',
     marginTop: 3,
-    marginLeft: -10,
   },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+  reloadEventsPanel: {
+    flexDirection: 'row'
   },
-  homeScreenFilename: {
-    marginVertical: 7,
+  refreshEventsButtonContainer: {
+    marginLeft: 5,
+    marginRight: 5,
+    width: 350,
   },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
+  refreshButton: {
+    backgroundColor: '#1D6292'
   },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
+  homePageButtonTitle: {
+    color: '#fff'
   },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
+  homePageSectionTitles: {
+    color: '#1D6292',
     marginTop: 5,
+    padding: 3,
+    fontSize: 18
   },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
+  OnNoworOnNext: {
+    color: '#1D6292',
   },
-  helpLink: {
-    paddingVertical: 15,
+  eventList: {
+    flex: 1,
+    marginTop: 15
   },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+  eventsOnNowStyle: {
+    height: 200
+  }
 });
+
+const mapStateToProps = (state) => {
+  const { dbjab } = state
+  return { dbjab }
+};
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    getEvents,
+    resetEvents,
+    problemWithEvents
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

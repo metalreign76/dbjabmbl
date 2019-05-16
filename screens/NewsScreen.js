@@ -1,6 +1,6 @@
 import React from 'react';
 import { WebView, ActivityIndicator, Platform } from 'react-native';
-import { TouchableHighlight, FlatList, Text, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
 import { Image, Card, Overlay } from 'react-native-elements'
 import wpAPI from 'wpapi'
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ var wp;
 class NewsScreen extends React.Component {
   static navigationOptions = {
     title: 'News',
+    headerTintColor: '#1D6292'
   };
 
   constructor(props) {
@@ -37,12 +38,12 @@ class NewsScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.pageContainer}>
         <FlatList style={styles.newsList}
           data={this.props.dbjab.newsData}
-          ListEmptyComponent={<ActivityIndicator size="large" color={Colors.tintColor} />}
+          ListEmptyComponent={<ActivityIndicator size="large" color='#fff' />}
           renderItem={({item}) => (
-            <TouchableHighlight onPress={()=> this.showNews(item.fullPost)}>
+            <TouchableOpacity onPress={()=> this.showNews(item.fullPost)}>
             <Card 
               containerStyle={styles.container} 
               key={item.key}
@@ -67,7 +68,7 @@ class NewsScreen extends React.Component {
               </View>
             }
             </Card>
-            </TouchableHighlight>
+            </TouchableOpacity>
           )}
         />
         <Overlay 
@@ -104,14 +105,20 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     padding: 10,
-    fontSize: 18
+    fontSize: 18,
+    color: '#1D6292'
   },
   cardExcerpt: {
-    paddingTop: 10
+    paddingTop: 10,
+    color: '#1D6292'
   },
   newsImage: {
     width: 50,
     height: 50
+  },
+  pageContainer: {
+    backgroundColor: '#1D6292',
+    height: '100%'
   }
 });
 

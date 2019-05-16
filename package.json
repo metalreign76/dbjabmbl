@@ -12,11 +12,12 @@
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
-    "aws-sdk": "^2.451.0",
     "axios": "^0.18.0",
     "basic-xml2json": "^1.0.4",
     "deepmerge": "^3.2.0",
     "expo": "^32.0.0",
+    "fast-deep-equal": "^2.0.1",
+    "moment": "^2.24.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-elements": "^1.1.0",
