@@ -146,11 +146,11 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
           [
             {
               title: 'On Now',
-              eventList: [ { key:1, gigDetails: 'Problems retrieving gig info, please try again!' }]
+              data: [ { key:1, gigDetails: 'Problems retrieving gig info, please try again!' }]
             },
             {
               title: 'Up Next',
-              eventList: [ { key:1, gigDetails: 'Problems retrieving gig info, please try again!' }]
+              data: [ { key:2, gigDetails: 'Problems retrieving gig info, please try again!' }]
             }
           ]    
         }

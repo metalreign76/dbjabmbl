@@ -93,15 +93,15 @@ class HomeScreen extends React.Component {
           stickySectionHeadersEnabled={true}
           renderSectionHeader={({section}) => {
             return (
-              <View>
+              <View style={styles.sectionHeader}>
                 <Text style={styles.homePageSectionTitles}>{section.title}</Text>
               </View>
             )
           }}
           renderItem={({item}) => {
             return (
-              <View style={styles.OnNoworOnNext}>
               <ListItem 
+                  containerStyle={styles.lessPadding}
                   leftIcon={{ 
                     type: 'ionicon',
                     name: Platform.OS === 'ios' ? 'ios-microphone' : 'md-microphone',
@@ -110,7 +110,6 @@ class HomeScreen extends React.Component {
                   title={item.gigDetails} 
                   titleStyle={styles.OnNoworOnNext}
               />
-              </View>
             )
         }}/>
         </View>
@@ -151,9 +150,11 @@ const styles = StyleSheet.create({
   },
   homePageSectionTitles: {
     color: '#1D6292',
+    fontSize: 20,
+    fontWeight: 'bold',
     marginTop: 5,
-    padding: 3,
-    fontSize: 18
+    marginBottom: 5,
+    marginLeft: 10
   },
   OnNoworOnNext: {
     color: '#1D6292',
@@ -162,8 +163,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 15
   },
-  eventsOnNowStyle: {
-    height: 200
+  sectionHeader: {
+    backgroundColor: '#F0AE1A',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#1D6292'
+  },
+  lessPadding: {
+    paddingTop: 5,
+    paddingBottom: 5
   }
 });
 
