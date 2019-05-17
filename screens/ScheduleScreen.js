@@ -5,7 +5,12 @@ import { Image, Card, Overlay } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { showEventItem, hideEventItem } from '../actions/eventsAction';
-import equal from 'fast-deep-equal';
+import GestureRecognizer from 'react-native-swipe-gestures';
+
+const swipeConfig = {
+  velocityThreshold: 0.3,
+  directionalOffsetThreshold: 80
+};
 
 class ScheduleScreen extends React.Component {
   static navigationOptions = {
@@ -21,8 +26,20 @@ class ScheduleScreen extends React.Component {
     this.props.showEventItem(eventItem);
   }
 
+  onSwipeRight(gestureState) {
+    console.log("Swipe Right detected");
+    this.props.navigation.navigate("News")
+   }
+ 
   render() {
     return (
+      <GestureRecognizer
+        onSwipeRight={() => this.onSwipeRight()}
+        config={swipeConfig}
+        style={{
+          flex: 1
+        }}
+      >
       <View style={styles.pageContainer}>
       <FlatList style={styles.eventList}
         data={this.props.dbjab.eventData}
@@ -67,6 +84,7 @@ class ScheduleScreen extends React.Component {
           />
       </Overlay>
       </View>
+      </GestureRecognizer>
     );
   }
 }

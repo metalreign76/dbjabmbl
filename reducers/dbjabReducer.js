@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     newsItemVisible: false,
     newsSelectedItem: null,
     eventsError: false,
+    eventsLoading: true,
     eventData: [],
     eventItemVisible: false,
     eventSelectedItem: null,
@@ -115,6 +116,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
         ...state, 
         eventsError: false,
         eventData: fullEventList,
+        eventsLoading: false,
         eventsOnNowOnNext: 
         [
           {
@@ -127,13 +129,13 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
           }
         ]    
       }
-      console.log("On Now", formattedEventsOnNow)
-      console.log("On Next", formattedEventsOnNext)
       return newEventState;
 
       case 'RESET_EVENTS':
-        const resetEventsState = {
+      console.log("Resetting...")
+      const resetEventsState = {
           ...state,
+          eventsLoading: true,
           eventsOnNowOnNext: []    
         }
         return resetEventsState;
@@ -142,6 +144,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
         const problemEventsState = {
           ...state,
           eventsError: true,
+          eventsLoading: false,
           eventsOnNowOnNext: 
           [
             {

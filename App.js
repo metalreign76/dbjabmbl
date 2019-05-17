@@ -5,13 +5,55 @@ import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import dbjabReducer from './reducers/dbjabReducer';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getEvents, resetEvents, problemWithEvents } from './actions/eventsAction';
+import wpAPI from 'wpapi'
+import { getPosts } from './actions/postsAction';
+
+
+const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
 const store = createStore(dbjabReducer);
 
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
+
+  loadEvents() {
+    return new Promise((resolve, reject) => {
+      console.log("Getting events")
+      axios.get(getEventsAPI)
+      .then(results => {
+        store.dispatch(getEvents(results.data.events));
+        resolve();
+      })
+      .catch(err => {
+        console.log("ERROR:", err)
+        store.dispatch(problemWithEvents());
+        resolve();
+      })
+    })
+  }
+
+  loadNews() {
+    return new Promise((resolve, reject) => {
+      console.log("Getting News")
+      var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
+      wp.posts()
+      .param( 'after', new Date( '2019-01-01' ) )
+      .then( list => {
+        store.dispatch(getPosts(list))
+        resolve();
+      })
+      .catch(err => {
+        console.log("ERROR:", err)
+        reject();
+      })
+    })
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -38,14 +80,14 @@ export default class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/DannyBoyHome.png'),
+        require('./assets/images/dbjabBackground.png')
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        ...Icon.Ionicons.font
       }),
+      this.loadEvents(),
+      this.loadNews()
     ]);
   };
 
@@ -66,3 +108,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+export default App;

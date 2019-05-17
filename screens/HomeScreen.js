@@ -6,23 +6,29 @@ import {
   View,
   Text,
   SectionList,
-  ActivityIndicator
+  ActivityIndicator,
+  ImageBackground
 } from 'react-native';
-import { Button, Card, ListItem } from 'react-native-elements';
-import { Icon } from 'expo';
+import { Icon,  Button, Card, ListItem } from 'react-native-elements';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getEvents, resetEvents, problemWithEvents } from '../actions/eventsAction';
 import Colors from '../constants/Colors';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
+
+const swipeConfig = {
+  velocityThreshold: 0.3,
+  directionalOffsetThreshold: 80
+};
+
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
 
   constructor(props) {
     super(props);
@@ -31,12 +37,7 @@ class HomeScreen extends React.Component {
     this.resetEvents = this.resetEvents.bind(this);
   }
 
-  componentWillMount() {
-    this.loadEvents();
-  }
-
   resetEvents() {
-    console.log("Resetting...")
     this.props.resetEvents();
     if(this.props.dbjab.eventsError) {
       this.loadEvents()
@@ -59,8 +60,20 @@ class HomeScreen extends React.Component {
     })
   }
 
+  onSwipeLeft(gestureState) {
+   console.log("Swipe Left detected");
+   this.props.navigation.navigate("News")
+  }
+
   render() {
     return (
+      <GestureRecognizer
+        onSwipeLeft={() => this.onSwipeLeft()}
+        config={swipeConfig}
+        style={{
+          flex: 1
+        }}
+      >
       <View style={styles.container}>
         <View style={styles.welcomeContainer}>
           <Image
@@ -75,15 +88,17 @@ class HomeScreen extends React.Component {
             titleStyle={styles.homePageButtonTitle}
             buttonStyle={styles.refreshButton}
             icon={
-              <Icon.Ionicons
+              <Icon
+                type='ionicon'
                 name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
                 size={26}
-                style={{ marginBottom: -2, paddingLeft: 10 }}
+                iconStyle={{ marginBottom: -2, paddingLeft: 10 }}
                 color={Colors.noticeText}
               />
             }
             iconRight
             onPress={this.resetEvents}          
+            raised
           />
         </View>
         <View style={styles.eventList}>
@@ -92,9 +107,23 @@ class HomeScreen extends React.Component {
           sections={this.props.dbjab.eventsOnNowOnNext}
           stickySectionHeadersEnabled={true}
           renderSectionHeader={({section}) => {
+            var arrowDirection = section.title == 'On Now' ? 'down' : 'forward';
             return (
               <View style={styles.sectionHeader}>
-                <Text style={styles.homePageSectionTitles}>{section.title}</Text>
+                <ImageBackground 
+                  source={require('../assets/images/dbjabBackground.png')} 
+                  style={styles.backgroundImageCSS}>
+                  <Text style={styles.homePageSectionTitles}>
+                    {section.title}
+                  </Text>
+                  <Icon
+                    type='ionicon'
+                    name={Platform.OS === 'ios' ? 'ios-arrow-' + arrowDirection : 'md-arrow-' + arrowDirection}
+                    size={26}
+                    iconStyle={styles.sectionHeaderIcon}
+                    color={Colors.noticeText}
+                  />
+                </ImageBackground>
               </View>
             )
           }}
@@ -109,11 +138,13 @@ class HomeScreen extends React.Component {
                   }}
                   title={item.gigDetails} 
                   titleStyle={styles.OnNoworOnNext}
+                  bottomDivider={true}
               />
             )
         }}/>
         </View>
       </View>
+      </GestureRecognizer>
     );
   }
 }
@@ -149,12 +180,11 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   homePageSectionTitles: {
-    color: '#1D6292',
+    color: '#fff',
     fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom: 5,
-    marginLeft: 10
+    marginTop: 8,
+    marginBottom: 8,
+    marginLeft: 10,
   },
   OnNoworOnNext: {
     color: '#1D6292',
@@ -164,14 +194,21 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   sectionHeader: {
-    backgroundColor: '#F0AE1A',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#1D6292'
   },
   lessPadding: {
-    paddingTop: 5,
-    paddingBottom: 5
+    paddingTop: 7,
+    paddingBottom: 7
+  },
+  backgroundImageCSS: {
+    resizeMode: 'contain'
+  },
+  sectionHeaderIcon: {
+    position: 'absolute',
+    top: -35,
+    left: 95
   }
 });
 

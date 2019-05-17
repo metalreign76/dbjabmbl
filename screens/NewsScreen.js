@@ -2,11 +2,15 @@ import React from 'react';
 import { WebView, ActivityIndicator, Platform } from 'react-native';
 import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
 import { Image, Card, Overlay } from 'react-native-elements'
-import wpAPI from 'wpapi'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getPosts, showNewsItem, hideNewsItem } from '../actions/postsAction';
-import Colors from '../constants/Colors';
+import GestureRecognizer from 'react-native-swipe-gestures';
+
+const swipeConfig = {
+  velocityThreshold: 0.3,
+  directionalOffsetThreshold: 80
+};
 
 var wp;
 
@@ -18,26 +22,32 @@ class NewsScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
-  }
-
-  componentWillMount() {
-    wp.posts()
-    .param( 'after', new Date( '2019-01-01' ) )
-    .then( list => {
-      this.props.getPosts(list)
-    })
-    .catch(err => {
-      console.log("ERROR:", err)
-    })
   }
 
   showNews = (newsItem) => {
     this.props.showNewsItem(newsItem);
   }
 
+  onSwipeLeft(gestureState) {
+    console.log("Swipe Left detected");
+    this.props.navigation.navigate("Schedule")
+  }
+
+  onSwipeRight(gestureState) {
+    console.log("Swipe Right detected");
+    this.props.navigation.navigate("Home")
+  }
+ 
   render() {
     return (
+      <GestureRecognizer
+        onSwipeLeft={() => this.onSwipeLeft()}
+        onSwipeRight={() => this.onSwipeRight()}
+        config={swipeConfig}
+        style={{
+          flex: 1
+        }}
+      > 
       <View style={styles.pageContainer}>
         <FlatList style={styles.newsList}
           data={this.props.dbjab.newsData}
@@ -81,6 +91,7 @@ class NewsScreen extends React.Component {
             />
         </Overlay>
       </View>
+      </GestureRecognizer>
     );
   }
 }
