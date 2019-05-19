@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Image,
   Platform,
   StyleSheet,
   View,
@@ -9,13 +8,12 @@ import {
   ActivityIndicator,
   ImageBackground
 } from 'react-native';
-import { Icon,  Button, Card, ListItem } from 'react-native-elements';
+import { Image,  Icon,  Button, Card, ListItem } from 'react-native-elements';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getEvents, resetEvents, problemWithEvents } from '../actions/eventsAction';
+import { getEvents, resetEvents, problemWithEvents, resetEventsRedraw } from '../actions/eventsAction';
 import Colors from '../constants/Colors';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
 
@@ -67,41 +65,29 @@ class HomeScreen extends React.Component {
 
   render() {
     return (
-      <GestureRecognizer
-        onSwipeLeft={() => this.onSwipeLeft()}
-        config={swipeConfig}
-        style={{
-          flex: 1
-        }}
-      >
       <View style={styles.container}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={require('../assets/images/DannyBoyHome.png')}
-            style={styles.welcomeImage}
-          />
-        </View>
-        <View style={styles.reloadEventsPanel}>
-          <Button
-            containerStyle={styles.refreshEventsButtonContainer}
-            title="Update Whats On Now/Next"
-            titleStyle={styles.homePageButtonTitle}
-            buttonStyle={styles.refreshButton}
-            icon={
-              <Icon
-                type='ionicon'
-                name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
-                size={26}
-                iconStyle={{ marginBottom: -2, paddingLeft: 10 }}
-                color={Colors.noticeText}
-              />
-            }
-            iconRight
-            onPress={this.resetEvents}          
-            raised
-          />
-        </View>
-        <View style={styles.eventList}>
+        <Image
+          source={require('../assets/images/DannyBoyHome.png')}
+          style={styles.welcomeImage}
+          containerStyle={styles.homeImageContainer}
+        />
+        <Button
+          title="Update Whats On Now/Next -"
+          titleStyle={styles.homePageButtonTitle}
+          buttonStyle={styles.refreshButton}
+          icon={
+            <Icon
+              type='ionicon'
+              name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
+              size={26}
+              iconStyle={{ marginBottom: -2, paddingLeft: 10 }}
+              color={Colors.noticeText}
+            />
+          }
+          iconRight
+          onPress={this.resetEvents}          
+          raised
+        />
         <SectionList
           ListEmptyComponent={<ActivityIndicator  size="large" color="#1D6292" />}
           sections={this.props.dbjab.eventsOnNowOnNext}
@@ -142,9 +128,7 @@ class HomeScreen extends React.Component {
               />
             )
         }}/>
-        </View>
       </View>
-      </GestureRecognizer>
     );
   }
 }
@@ -155,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'column'
   },
-  welcomeContainer: {
+  homeImageContainer: {
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 10,
@@ -168,13 +152,14 @@ const styles = StyleSheet.create({
   reloadEventsPanel: {
     flexDirection: 'row'
   },
-  refreshEventsButtonContainer: {
+  refreshButton: {
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: '#1D6292',
     marginLeft: 5,
     marginRight: 5,
-    width: 350,
-  },
-  refreshButton: {
-    backgroundColor: '#1D6292'
   },
   homePageButtonTitle: {
     color: '#fff'
@@ -221,7 +206,8 @@ const mapDispatchToProps = dispatch => (
   bindActionCreators({
     getEvents,
     resetEvents,
-    problemWithEvents
+    problemWithEvents,
+    resetEventsRedraw
   }, dispatch)
 );
 

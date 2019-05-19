@@ -1,11 +1,10 @@
 import React from 'react';
 import { WebView, ActivityIndicator, Platform } from 'react-native';
 import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
-import { Image, Card, Overlay } from 'react-native-elements'
+import { Icon, Image, Card, Overlay } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getPosts, showNewsItem, hideNewsItem } from '../actions/postsAction';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 const swipeConfig = {
   velocityThreshold: 0.3,
@@ -40,14 +39,6 @@ class NewsScreen extends React.Component {
  
   render() {
     return (
-      <GestureRecognizer
-        onSwipeLeft={() => this.onSwipeLeft()}
-        onSwipeRight={() => this.onSwipeRight()}
-        config={swipeConfig}
-        style={{
-          flex: 1
-        }}
-      > 
       <View style={styles.pageContainer}>
         <FlatList style={styles.newsList}
           data={this.props.dbjab.newsData}
@@ -83,15 +74,24 @@ class NewsScreen extends React.Component {
         />
         <Overlay 
           isVisible={this.props.dbjab.newsItemVisible}
-          fullScreen={true}
+          fullScreen={true} 
           onBackdropPress={() => this.props.hideNewsItem()}
         >
-          <WebView
-            source={{ html: this.props.dbjab.newsSelectedItem}}
+        <View>
+          <Icon
+              type='ionicon'
+              name={Platform.OS === 'ios' ? 'ios-close' : 'md-close'}
+              size={26}
+              iconStyle={styles.overlayIcon}
+              color='#1D6292'
+              onPress={() => this.props.hideNewsItem()}
             />
+            <WebView
+              source={{ html: this.props.dbjab.newsSelectedItem}}
+            />
+          </View>
         </Overlay>
       </View>
-      </GestureRecognizer>
     );
   }
 }
@@ -130,6 +130,11 @@ const styles = StyleSheet.create({
   pageContainer: {
     backgroundColor: '#1D6292',
     height: '100%'
+  },
+  overlayIcon: {
+    alignSelf: 'flex-end',
+    marginRight: 5,
+    marginTop: 10
   }
 });
 

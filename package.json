@@ -21,8 +21,6 @@
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-elements": "^1.1.0",
-    "react-native-swipe-gestures": "^1.0.3",
-    "react-native-webview": "^5.8.1",
     "react-navigation": "^3.9.1",
     "react-redux": "^6.0.1",
     "react-xml-parser": "^1.1.2",
@@ -31,6 +29,7 @@
     "wpapi": "^1.2.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-expo": "^5.0.0",
     "jest-expo": "^32.0.0"
   },

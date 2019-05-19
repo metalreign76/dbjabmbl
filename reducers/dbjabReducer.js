@@ -17,7 +17,7 @@ const INITIAL_STATE = {
     eventData: [],
     eventItemVisible: false,
     eventSelectedItem: null,
-    eventsOnNowOnNext: []    
+    eventsOnNowOnNext: []
 };
 
 const decodeChar = (match) => {
@@ -127,7 +127,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
             title: 'Up Next',
             data: formattedEventsOnNext
           }
-        ]    
+        ]
       }
       return newEventState;
 
@@ -136,7 +136,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       const resetEventsState = {
           ...state,
           eventsLoading: true,
-          eventsOnNowOnNext: []    
+          eventsOnNowOnNext: [] 
         }
         return resetEventsState;
 
@@ -155,7 +155,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
               title: 'Up Next',
               data: [ { key:2, gigDetails: 'Problems retrieving gig info, please try again!' }]
             }
-          ]    
+          ]
         }
         return problemEventsState;
 
