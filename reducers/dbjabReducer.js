@@ -81,12 +81,20 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       })
       var formattedEventsOnNow, formattedEventsOnNext;
       if(eventsOnNow.length == 0) {
-        formattedEventsOnNow = [{key: 1, gigDetails: "No Gigs on currently"}];
+        formattedEventsOnNow = [{
+          key: 1, 
+          gigDetails: "No Gigs on currently",
+          gigDescription: "no further details available"
+        }];
       }
       else {
         formattedEventsOnNow = eventsOnNow.map((e, i) => {
-          return { key: i+1, gigDetails: e.eventName + " @ " + e.eventVenue}
-        })
+          return { 
+            key: i+1, 
+            gigDetails: e.eventName + " @ " + e.eventVenue,
+            gigDescription: e.eventDescription
+          }
+        });
       }
       var countOfOnNext = 0;
       var maxOnNext = 5;
@@ -105,11 +113,20 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
         return false;
       })
       if(eventsOnNext.length == 0) {
-        formattedEventsOnNext = [{key: 1, gigDetails: "I'm afraid thats all folks! See you all next year"}];
+        formattedEventsOnNext = [{
+          key: 1, 
+          gigDetails: "I'm afraid thats all folks! See you all next year",
+          gigDescription: "No further details available"
+        }];
       }
       else {
         formattedEventsOnNext = eventsOnNext.map((e, i) => {
-          return { key: i+1, gigDetails: e.eventStartTime + " - " + e.eventName + " @ " + e.eventVenue}
+          return { 
+            key: i+1, 
+            gigDetails: e.eventStartTime + " - " + e.eventName + " @ " + e.eventVenue,
+            gigDescription: e.eventDescription
+          }
+
         })
       }
       const newEventState = { 
@@ -132,7 +149,6 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       return newEventState;
 
       case 'RESET_EVENTS':
-      console.log("Resetting...")
       const resetEventsState = {
           ...state,
           eventsLoading: true,
@@ -149,11 +165,19 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
           [
             {
               title: 'On Now',
-              data: [ { key:1, gigDetails: 'Problems retrieving gig info, please try again!' }]
+              data: [ { 
+                key:1, 
+                gigDetails: 'Problems retrieving gig info, please try again!',
+                gigDescription: 'No details available' 
+              }]
             },
             {
               title: 'Up Next',
-              data: [ { key:2, gigDetails: 'Problems retrieving gig info, please try again!' }]
+              data: [ { 
+                key:2, 
+                gigDetails: 'Problems retrieving gig info, please try again!',
+                gigDescription: 'No details available' 
+              }]
             }
           ]
         }

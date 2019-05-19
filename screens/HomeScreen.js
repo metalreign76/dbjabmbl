@@ -1,18 +1,20 @@
 import React from 'react';
 import {
   Platform,
+  Modal,
   StyleSheet,
   View,
   Text,
   SectionList,
   ActivityIndicator,
-  ImageBackground
+  ImageBackground,
+  WebView
 } from 'react-native';
-import { Image,  Icon,  Button, Card, ListItem } from 'react-native-elements';
+import { Image,  Icon,  Button, ListItem } from 'react-native-elements';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getEvents, resetEvents, problemWithEvents, resetEventsRedraw } from '../actions/eventsAction';
+import { getEvents, showEventItem, hideEventItem, resetEvents, problemWithEvents } from '../actions/eventsAction';
 import Colors from '../constants/Colors';
 
 const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
@@ -33,6 +35,7 @@ class HomeScreen extends React.Component {
 
     this.loadEvents = this.loadEvents.bind(this);
     this.resetEvents = this.resetEvents.bind(this);
+    this.showEvent = this.showEvent.bind(this);
   }
 
   resetEvents() {
@@ -41,13 +44,11 @@ class HomeScreen extends React.Component {
       this.loadEvents()
     }
     else {
-      console.log("Updating...")
       this.props.getEvents(this.props.dbjab.eventData);
     }
   }
   
   loadEvents() {
-    console.log("Getting events")
     axios.get(getEventsAPI)
     .then(results => {
       this.props.getEvents(results.data.events);
@@ -58,9 +59,8 @@ class HomeScreen extends React.Component {
     })
   }
 
-  onSwipeLeft(gestureState) {
-   console.log("Swipe Left detected");
-   this.props.navigation.navigate("News")
+  showEvent(eventItem) {
+    this.props.showEventItem(eventItem);
   }
 
   render() {
@@ -122,12 +122,38 @@ class HomeScreen extends React.Component {
                     name: Platform.OS === 'ios' ? 'ios-microphone' : 'md-microphone',
                     color: '#1D6292'
                   }}
+                  rightIcon={{ 
+                    type: 'ionicon',
+                    name: Platform.OS === 'ios' ? 'ios-information-circle-outline' : 'md-information-circle-outline',
+                    color: '#1D6292',
+                    style: styles.infoIcon
+                  }}
                   title={item.gigDetails} 
                   titleStyle={styles.OnNoworOnNext}
                   bottomDivider={true}
+                  onPress={()=> this.showEvent(item.gigDescription)}
               />
             )
         }}/>
+      <Modal 
+        visible={this.props.dbjab.eventItemVisible}
+        presentationStyle={'fullScreen'} 
+        onDismiss={() => this.props.hideEventItem()}
+        onRequestClose={() => this.props.hideEventItem()}
+        animationType={'slide'}
+      >
+        <Icon
+          type='ionicon'
+          name={Platform.OS === 'ios' ? 'ios-close-circle-outline' : 'md-close-circle-outline'}
+          size={30}
+          iconStyle={styles.overlayIcon}
+          color='#1D6292'
+          onPress={() => this.props.hideEventItem()}
+        />
+        <WebView
+          source={{ html: this.props.dbjab.eventSelectedItem}}
+        />
+      </Modal>
       </View>
     );
   }
@@ -141,13 +167,13 @@ const styles = StyleSheet.create({
   },
   homeImageContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
+    paddingTop: 10,
     marginBottom: 10,
   },
   welcomeImage: {
     height: 200,
-    resizeMode: 'contain',
-    marginTop: 3,
+    resizeMode: 'contain'
   },
   reloadEventsPanel: {
     flexDirection: 'row'
@@ -174,18 +200,14 @@ const styles = StyleSheet.create({
   OnNoworOnNext: {
     color: '#1D6292',
   },
-  eventList: {
-    flex: 1,
-    marginTop: 15
-  },
   sectionHeader: {
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#1D6292'
   },
   lessPadding: {
-    paddingTop: 7,
-    paddingBottom: 7
+    paddingTop: 10,
+    paddingBottom: 10
   },
   backgroundImageCSS: {
     resizeMode: 'contain'
@@ -194,6 +216,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -35,
     left: 95
+  },
+  overlayIcon: {
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginTop: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 10
+  },
+  infoIcon: {
+    alignSelf: 'flex-end'
   }
 });
 
@@ -207,7 +240,8 @@ const mapDispatchToProps = dispatch => (
     getEvents,
     resetEvents,
     problemWithEvents,
-    resetEventsRedraw
+    showEventItem,
+    hideEventItem
   }, dispatch)
 );
 

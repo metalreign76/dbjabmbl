@@ -1,5 +1,5 @@
 import React from 'react';
-import { WebView, ActivityIndicator, Platform } from 'react-native';
+import { Modal, WebView, ActivityIndicator, Platform } from 'react-native';
 import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
 import { Icon, Image, Card, Overlay } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -25,16 +25,6 @@ class NewsScreen extends React.Component {
 
   showNews = (newsItem) => {
     this.props.showNewsItem(newsItem);
-  }
-
-  onSwipeLeft(gestureState) {
-    console.log("Swipe Left detected");
-    this.props.navigation.navigate("Schedule")
-  }
-
-  onSwipeRight(gestureState) {
-    console.log("Swipe Right detected");
-    this.props.navigation.navigate("Home")
   }
  
   render() {
@@ -72,25 +62,25 @@ class NewsScreen extends React.Component {
             </TouchableOpacity>
           )}
         />
-        <Overlay 
-          isVisible={this.props.dbjab.newsItemVisible}
-          fullScreen={true} 
-          onBackdropPress={() => this.props.hideNewsItem()}
+        <Modal 
+          visible={this.props.dbjab.newsItemVisible}
+          presentationStyle={'fullScreen'} 
+          onDismiss={() => this.props.hideNewsItem()}
+          onRequestClose={() => this.props.hideNewsItem()}
+          animationType={'slide'}
         >
-        <View>
           <Icon
               type='ionicon'
-              name={Platform.OS === 'ios' ? 'ios-close' : 'md-close'}
-              size={26}
+              name={Platform.OS === 'ios' ? 'ios-close-circle-outline' : 'md-close-circle-outline'}
+              size={30}
               iconStyle={styles.overlayIcon}
               color='#1D6292'
               onPress={() => this.props.hideNewsItem()}
-            />
-            <WebView
-              source={{ html: this.props.dbjab.newsSelectedItem}}
-            />
-          </View>
-        </Overlay>
+          />
+          <WebView
+            source={{ html: this.props.dbjab.newsSelectedItem}}
+          />
+        </Modal>
       </View>
     );
   }
@@ -133,8 +123,10 @@ const styles = StyleSheet.create({
   },
   overlayIcon: {
     alignSelf: 'flex-end',
-    marginRight: 5,
-    marginTop: 10
+    marginRight: 10,
+    marginTop: 10,
+    paddingTop: 10,
+    paddingRight: 10
   }
 });
 

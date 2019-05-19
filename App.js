@@ -24,7 +24,6 @@ class App extends React.Component {
 
   loadEvents() {
     return new Promise((resolve, reject) => {
-      console.log("Getting events")
       axios.get(getEventsAPI)
       .then(results => {
         store.dispatch(getEvents(results.data.events));
@@ -40,7 +39,6 @@ class App extends React.Component {
 
   loadNews() {
     return new Promise((resolve, reject) => {
-      console.log("Getting News")
       var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
       wp.posts()
       .param( 'after', new Date( '2019-01-01' ) )

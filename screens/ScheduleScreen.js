@@ -1,7 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
-import { WebView, ActivityIndicator, Platform } from 'react-native';
-import { Image, Card, Overlay } from 'react-native-elements'
+import { Platform, TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
+import { Modal, WebView, ActivityIndicator } from 'react-native';
+import { Icon, Image, Card } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { showEventItem, hideEventItem } from '../actions/eventsAction';
@@ -24,10 +24,6 @@ class ScheduleScreen extends React.Component {
   showEvent(eventItem) {
     this.props.showEventItem(eventItem);
   }
-
-  onSwipeRight(gestureState) {
-    this.props.navigation.navigate("News")
-   }
  
   render() {
     return (
@@ -65,15 +61,25 @@ class ScheduleScreen extends React.Component {
 
         )}
       />
-      <Overlay 
-        isVisible={this.props.dbjab.eventItemVisible}
-        fullScreen={true}
-        onBackdropPress={() => this.props.hideEventItem()}
+      <Modal 
+        visible={this.props.dbjab.eventItemVisible}
+        presentationStyle={'fullScreen'} 
+        onDismiss={() => this.props.hideEventItem()}
+        onRequestClose={() => this.props.hideEventItem()}
+        animationType={'slide'}
       >
+        <Icon
+          type='ionicon'
+          name={Platform.OS === 'ios' ? 'ios-close-circle-outline' : 'md-close-circle-outline'}
+          size={30}
+          iconStyle={styles.overlayIcon}
+          color='#1D6292'
+          onPress={() => this.props.hideEventItem()}
+        />
         <WebView
           source={{ html: this.props.dbjab.eventSelectedItem}}
-          />
-      </Overlay>
+        />
+      </Modal>
       </View>
     );
   }
@@ -112,6 +118,13 @@ const styles = StyleSheet.create({
   pageContainer: {
     backgroundColor: '#1D6292',
     height: '100%'
+  },
+  overlayIcon: {
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginTop: 10,
+    paddingTop: 10,
+    paddingRight: 10
   }
 });
 
