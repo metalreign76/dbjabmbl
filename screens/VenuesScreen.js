@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, Text, ScrollView, View, StyleSheet } from 'react-native';
+import { Platform, FlatList, Text, ScrollView, View, StyleSheet } from 'react-native';
 import { ImageBackground, ActivityIndicator } from 'react-native';
 import { Icon, Image, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -14,9 +14,9 @@ const swipeConfig = {
   directionalOffsetThreshold: 80
 };
 
-class ScheduleScreen extends React.Component {
+class VenuesScreen extends React.Component {
   static navigationOptions = {
-    title: 'Gig Guide ',
+    title: 'Venues Guide ',
     headerTintColor: '#1D6292'
   };
 
@@ -49,27 +49,27 @@ class ScheduleScreen extends React.Component {
  
   _renderContent = section => {
     const eventSubList = section.content.map(event => {
-        return (
-        <ListItem 
-            key={event.key}
-            containerStyle={styles.lessPadding}
-            leftAvatar={
-              <Image
-                source={{ uri: this.props.dbjab.eventData[event.key].eventImage }}
-                style={styles.eventImage}
-                PlaceholderContent={<ActivityIndicator />}
-              />
-            }
-            rightIcon={{ 
-              type: 'ionicon',
-              name: Platform.OS === 'ios' ? 'ios-information-circle-outline' : 'md-information-circle-outline',
-              color: '#1D6292',
-              style: styles.infoIcon
-            }}
-            title={<Text style={{fontWeight: 'bold'}}>{event.gigTitle}<Text style={{fontWeight: 'normal'}}>, {event.gigDetails}</Text></Text> }
-            bottomDivider={true}
-            onPress={()=> this.showEvent(this.props.dbjab.eventData[event.key].eventDescription)}
-        /> )
+      return (
+      <ListItem 
+          key={event.key}
+          containerStyle={styles.lessPadding}
+          leftAvatar={
+            <Image
+              source={{ uri: this.props.dbjab.eventData[event.key].eventImage }}
+              style={styles.eventImage}
+              PlaceholderContent={<ActivityIndicator />}
+            />
+          }
+          rightIcon={{ 
+            type: 'ionicon',
+            name: Platform.OS === 'ios' ? 'ios-information-circle-outline' : 'md-information-circle-outline',
+            color: '#1D6292',
+            style: styles.infoIcon
+          }}
+          title={<Text style={{fontWeight: 'bold'}}>{event.gigTitle}<Text style={{fontWeight: 'normal'}}>, {event.gigDetails}</Text></Text> }
+          bottomDivider={true}
+          onPress={()=> this.showEvent(this.props.dbjab.eventData[event.key].eventDescription)}
+      /> )
     })
     return (
       <View>{eventSubList}</View>
@@ -85,7 +85,7 @@ class ScheduleScreen extends React.Component {
 
       <ScrollView>
         <Accordion
-          sections={this.props.dbjab.gigsByDay}
+          sections={this.props.dbjab.gigsByVenue}
           activeSections={this.state.activeSections}
           renderHeader={this._renderHeader}
           renderContent={this._renderContent}
@@ -166,4 +166,4 @@ const mapDispatchToProps = dispatch => (
   }, dispatch)
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduleScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(VenuesScreen);

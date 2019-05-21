@@ -8,7 +8,8 @@ import {
   SectionList,
   ActivityIndicator,
   ImageBackground,
-  WebView
+  WebView,
+  TouchableOpacity
 } from 'react-native';
 import { Image,  Icon,  Button, ListItem } from 'react-native-elements';
 import axios from 'axios';
@@ -59,8 +60,9 @@ class HomeScreen extends React.Component {
     })
   }
 
-  showEvent(eventItem) {
-    this.props.showEventItem(eventItem);
+  showEvent(eventKey) {
+    if((eventKey == "NOGIGSNOW")||(eventKey == "NOGIGSNEXT")) return;
+    this.props.showEventItem(this.props.dbjab.eventData[eventKey].eventDescription);
   }
 
   render() {
@@ -114,14 +116,18 @@ class HomeScreen extends React.Component {
             )
           }}
           renderItem={({item}) => {
+            var eventKey = item.key;
+            var imageToDisplay = (this.props.dbjab.eventData[eventKey].eventImage ? this.props.dbjab.eventData[eventKey].eventImage : null)
             return (
               <ListItem 
                   containerStyle={styles.lessPadding}
-                  leftIcon={{ 
-                    type: 'ionicon',
-                    name: Platform.OS === 'ios' ? 'ios-microphone' : 'md-microphone',
-                    color: '#1D6292'
-                  }}
+                  leftAvatar={
+                    <Image
+                      source={{ uri: imageToDisplay }}
+                      style={styles.eventImage}
+                      PlaceholderContent={<ActivityIndicator />}
+                    />
+                  }
                   rightIcon={{ 
                     type: 'ionicon',
                     name: Platform.OS === 'ios' ? 'ios-information-circle-outline' : 'md-information-circle-outline',
@@ -131,7 +137,7 @@ class HomeScreen extends React.Component {
                   title={item.gigDetails} 
                   titleStyle={styles.OnNoworOnNext}
                   bottomDivider={true}
-                  onPress={()=> this.showEvent(item.gigDescription)}
+                  onPress={()=> this.showEvent(item.key)}
               />
             )
         }}/>
@@ -227,6 +233,10 @@ const styles = StyleSheet.create({
   },
   infoIcon: {
     alignSelf: 'flex-end'
+  },
+  eventImage: {
+    width: 50,
+    height: 50
   }
 });
 

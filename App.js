@@ -78,7 +78,8 @@ class App extends React.Component {
     return Promise.all([
       Asset.loadAsync([
         require('./assets/images/DannyBoyHome.png'),
-        require('./assets/images/dbjabBackground.png')
+        require('./assets/images/dbjabBackground.png'),
+        require('./assets/images/oops.png'),
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar

@@ -7,6 +7,7 @@ import TabBarIcon_Entypo from '../components/TabBarIcon_Entypo';
 import HomeScreen from '../screens/HomeScreen';
 import NewsScreen from '../screens/NewsScreen';
 import ScheduleScreen from '../screens/ScheduleScreen';
+import VenuesScreen from '../screens/VenuesScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -59,8 +60,26 @@ ScheduleStack.navigationOptions = {
   ),
 };
 
+const VenuesStack = createStackNavigator({
+  Venues: VenuesScreen,
+});
+
+VenuesStack.navigationOptions = {
+  tabBarLabel: 'Venues',
+  tabBarOptions: { 
+    activeTintColor: '#1D6292'
+  },
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-pin' : 'md-pin'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   NewsStack,
   ScheduleStack,
+  VenuesStack
 });

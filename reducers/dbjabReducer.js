@@ -17,7 +17,9 @@ const INITIAL_STATE = {
     eventData: [],
     eventItemVisible: false,
     eventSelectedItem: null,
-    eventsOnNowOnNext: []
+    eventsOnNowOnNext: [],
+    gigsByDay: [],
+    gigsByVenue: []
 };
 
 const decodeChar = (match) => {
@@ -76,30 +78,37 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
 
     case 'GET_EVENTS':
       const fullEventList = action.payload;
-      var eventsOnNow = fullEventList.filter(e => {
+      const eventKeys = Object.keys(fullEventList)
+ 
+      //Flatten list one level for easier processing
+      var dekeyedList = [];
+      eventKeys.forEach(k => {
+        dekeyedList.push(fullEventList[k])
+      })
+      var eventsOnNow = dekeyedList.filter(e => {
         return moment(triggerDate).isBetween(e.eventStart, e.eventEnd)
       })
+ 
+      //Create Whats On Now and Whats On next lists
       var formattedEventsOnNow, formattedEventsOnNext;
       if(eventsOnNow.length == 0) {
         formattedEventsOnNow = [{
-          key: 1, 
-          gigDetails: "No Gigs on currently",
-          gigDescription: "no further details available"
+          key: "NOGIGSNOW", 
+          gigDetails: "No Gigs on currently"
         }];
       }
       else {
         formattedEventsOnNow = eventsOnNow.map((e, i) => {
           return { 
-            key: i+1, 
-            gigDetails: e.eventName + " @ " + e.eventVenue,
-            gigDescription: e.eventDescription
+            key: e.key, 
+            gigDetails: e.eventName + " @ " + e.eventVenue
           }
         });
       }
       var countOfOnNext = 0;
       var maxOnNext = 5;
       var lastStartTime;
-      var eventsOnNext = fullEventList.filter(e => {
+      var eventsOnNext = dekeyedList.filter(e => {
         if(moment(triggerDate).isBefore(e.eventStart)) {
           countOfOnNext++;
           if(countOfOnNext <= maxOnNext) {
@@ -114,21 +123,54 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       })
       if(eventsOnNext.length == 0) {
         formattedEventsOnNext = [{
-          key: 1, 
-          gigDetails: "I'm afraid thats all folks! See you all next year",
-          gigDescription: "No further details available"
+          key: "NOGIGSNEXT", 
+          gigDetails: "I'm afraid thats all folks! See you all next year"
         }];
       }
       else {
+
         formattedEventsOnNext = eventsOnNext.map((e, i) => {
           return { 
-            key: i+1, 
-            gigDetails: e.eventStartTime + " - " + e.eventName + " @ " + e.eventVenue,
-            gigDescription: e.eventDescription
+            key: e.key, 
+            gigDetails: e.eventStartTime + " - " + e.eventName + " @ " + e.eventVenue
           }
 
         })
       }
+
+      //Now create events by day
+      var gigsByDay = {};
+      var gigTitle, gigDetails;
+      dekeyedList.forEach(e => {
+        gigTitle = e.eventName;
+        gigDetails = e.eventStartTime + " - " + e.eventEndTime + " @ " + e.eventVenue;
+        if(gigsByDay[e.eventDay])
+          gigsByDay[e.eventDay].push({ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails})
+        else
+          gigsByDay[e.eventDay] = [{ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails}]
+      })
+
+      var accordianViewGigs = [];
+      Object.keys(gigsByDay).forEach( d=> {
+        accordianViewGigs.push({ title: d, content:  gigsByDay[d]})
+      })
+
+      //Now create events by venue
+      var gigsByVenue = {}
+      dekeyedList.forEach(e => {
+        gigTitle = e.eventName;
+        gigDetails = e.eventDay + " " + e.eventStartTime + " - " + e.eventEndTime;
+        if(gigsByVenue[e.eventVenue])
+          gigsByVenue[e.eventVenue].push({ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails})
+        else
+          gigsByVenue[e.eventVenue] = [{ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails}]
+      })
+
+      var accordianViewVenues = [];
+      Object.keys(gigsByVenue).sort().forEach( v => {
+        accordianViewVenues.push({ title: v, content:  gigsByVenue[v]})
+      })
+
       const newEventState = { 
         ...state, 
         eventsError: false,
@@ -144,7 +186,9 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
             title: 'Up Next',
             data: formattedEventsOnNext
           }
-        ]
+        ],
+        gigsByDay: accordianViewGigs,
+        gigsByVenue: accordianViewVenues
       }
       return newEventState;
 
@@ -167,16 +211,16 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
               title: 'On Now',
               data: [ { 
                 key:1, 
-                gigDetails: 'Problems retrieving gig info, please try again!',
-                gigDescription: 'No details available' 
+                gigTitle: "Problems retrieving gig info",
+                gigDetails: 'please try again!'
               }]
             },
             {
               title: 'Up Next',
               data: [ { 
                 key:2, 
-                gigDetails: 'Problems retrieving gig info, please try again!',
-                gigDescription: 'No details available' 
+                gigTitle: "Problems retrieving gig info",
+                gigDetails: 'please try again!'
               }]
             }
           ]
