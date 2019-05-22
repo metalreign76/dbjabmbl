@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 import stripHtml from 'string-strip-html';
 import moment from 'moment';
 
-var triggerDate = "2018-06-09 20:30";
-//var triggerDate = "";
+//var triggerDate = "2018-06-09T23:30:00";
+var triggerDate = "";
 
 const imageReductionPercantage=20;
 
@@ -109,7 +109,8 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       var maxOnNext = 5;
       var lastStartTime;
       var eventsOnNext = dekeyedList.filter(e => {
-        if(moment(triggerDate).isBefore(e.eventStart)) {
+        if((moment(triggerDate).isBefore(e.eventStart)) 
+          && (moment(triggerDate).format('dddd') == moment(e.eventStart).format('dddd')))  {
           countOfOnNext++;
           if(countOfOnNext <= maxOnNext) {
             lastStartTime = e.eventStartTime
@@ -124,7 +125,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       if(eventsOnNext.length == 0) {
         formattedEventsOnNext = [{
           key: "NOGIGSNEXT", 
-          gigDetails: "I'm afraid thats all folks! See you all next year"
+          gigDetails: "I'm afraid thats all for now folks!"
         }];
       }
       else {
@@ -211,16 +212,14 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
               title: 'On Now',
               data: [ { 
                 key:1, 
-                gigTitle: "Problems retrieving gig info",
-                gigDetails: 'please try again!'
+                gigDetails: 'Problems retrieving gig info, please try again using button above!'
               }]
             },
             {
               title: 'Up Next',
               data: [ { 
                 key:2, 
-                gigTitle: "Problems retrieving gig info",
-                gigDetails: 'please try again!'
+                gigDetails: 'Problems retrieving gig info, please try again using button above!'
               }]
             }
           ]

@@ -117,13 +117,12 @@ class HomeScreen extends React.Component {
           }}
           renderItem={({item}) => {
             var eventKey = item.key;
-            var imageToDisplay = (this.props.dbjab.eventData[eventKey].eventImage ? this.props.dbjab.eventData[eventKey].eventImage : null)
             return (
               <ListItem 
                   containerStyle={styles.lessPadding}
                   leftAvatar={
                     <Image
-                      source={{ uri: imageToDisplay }}
+                      source={(this.props.dbjab.eventData[eventKey]) ? { uri: this.props.dbjab.eventData[eventKey].eventImage } :  require('../assets/images/oops.png')}
                       style={styles.eventImage}
                       PlaceholderContent={<ActivityIndicator />}
                     />

@@ -23,7 +23,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+       "bundleIdentifier": "com.dannyboyjazzandblues.dbjabmbl"
+    },
+    "android": {
+        "package": "com.dannyboyjazzandblues.dbjabmbl"
     },
     "description": "Mobile App to allow visitors to get information regarding The Danny Boy Jazz & Blues Festival held annually in Limavady"
   }
