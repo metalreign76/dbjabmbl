@@ -24,6 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Mobile App to allow visitors to get information regarding The Danny Boy Jazz & Blues Festival held annually in Limavady"
   }
 }

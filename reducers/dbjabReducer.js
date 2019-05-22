@@ -101,7 +101,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
         formattedEventsOnNow = eventsOnNow.map((e, i) => {
           return { 
             key: e.key, 
-            gigDetails: e.eventName + " @ " + e.eventVenue
+            gigDetails: e.eventName + " @ " + e.eventVenue + ", on until " + e.eventEndTime
           }
         });
       }
