@@ -180,9 +180,6 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'contain'
   },
-  reloadEventsPanel: {
-    flexDirection: 'row'
-  },
   refreshButton: {
     alignItems: 'center',
     marginBottom: 10,
