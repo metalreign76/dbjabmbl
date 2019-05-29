@@ -3,7 +3,7 @@ import stripHtml from 'string-strip-html';
 import moment from 'moment';
 
 //var triggerDate = "2018-06-09T23:30:00";
-var triggerDate = "";
+const festivalStartDate = "2019-06-03"
 
 const imageReductionPercantage=20;
 
@@ -29,7 +29,8 @@ const decodeChar = (match) => {
 removeImageSizes = (fullPost) => {
   var removeWidths = fullPost.replace(/width="[0-9]{2,4}" /g, "")
   var removeHeights = removeWidths.replace(/height="[0-9]{2,4}"/g, "")
-  return removeHeights;
+  var removeSizes = removeHeights.replace(/sizes=".*"/g, "sizes=\"(max-width: 500px) 95vw\"")
+  return removeSizes;
 }
 
 extractImage = (postContent) => {
@@ -86,7 +87,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
         dekeyedList.push(fullEventList[k])
       })
       var eventsOnNow = dekeyedList.filter(e => {
-        return moment(triggerDate).isBetween(e.eventStart, e.eventEnd)
+        return moment().isBetween(e.eventStart, e.eventEnd)
       })
  
       //Create Whats On Now and Whats On next lists
@@ -109,8 +110,18 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       var maxOnNext = 5;
       var lastStartTime;
       var eventsOnNext = dekeyedList.filter(e => {
-        if((moment(triggerDate).isBefore(e.eventStart)) 
-          && (moment(triggerDate).format('dddd') == moment(e.eventStart).format('dddd')))  {
+        if((moment().isBefore(e.eventStart)) 
+          && 
+          (
+            (
+              (moment().isBefore(festivalStartDate))
+            )
+          ||
+            (
+              (moment().format('dddd') == moment(e.eventStart).format('dddd'))
+            )
+          )
+        )  {
           countOfOnNext++;
           if(countOfOnNext <= maxOnNext) {
             lastStartTime = e.eventStartTime
@@ -125,16 +136,22 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       if(eventsOnNext.length == 0) {
         formattedEventsOnNext = [{
           key: "NOGIGSNEXT", 
-          gigDetails: "I'm afraid thats all for now folks!"
+          gigDetails: "I'm afraid nothing else on later today either!"
         }];
       }
       else {
 
         formattedEventsOnNext = eventsOnNext.map((e, i) => {
+          if(moment().isBefore(festivalStartDate, 'day'))
           return { 
             key: e.key, 
-            gigDetails: e.eventStartTime + " - " + e.eventName + " @ " + e.eventVenue
+            gigDetails: e.eventDay + " " + e.eventStartTime + ", " + e.eventName + " @ " + e.eventVenue
           }
+        else
+            return { 
+              key: e.key, 
+              gigDetails: e.eventStartTime + ", " + e.eventName + " @ " + e.eventVenue
+            }
 
         })
       }
@@ -144,11 +161,25 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       var gigTitle, gigDetails;
       dekeyedList.forEach(e => {
         gigTitle = e.eventName;
-        gigDetails = e.eventStartTime + " - " + e.eventEndTime + " @ " + e.eventVenue;
+        gigTimes = e.eventStartTime + " - " + e.eventEndTime;
+        gigVenue = e.eventVenue;
         if(gigsByDay[e.eventDay])
-          gigsByDay[e.eventDay].push({ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails})
+          gigsByDay[e.eventDay].push(
+            { 
+              key: e.key, 
+              gigTitle: gigTitle, 
+              gigTimes: gigTimes,
+              gigVenue: gigVenue
+            })
         else
-          gigsByDay[e.eventDay] = [{ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails}]
+          gigsByDay[e.eventDay] = [
+            { 
+              key: e.key, 
+              gigTitle: gigTitle, 
+              gigTimes: gigTimes,
+              gigVenue: gigVenue
+            }
+          ]
       })
 
       var accordianViewGigs = [];
@@ -160,11 +191,26 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       var gigsByVenue = {}
       dekeyedList.forEach(e => {
         gigTitle = e.eventName;
-        gigDetails = e.eventDay + " " + e.eventStartTime + " - " + e.eventEndTime;
+        gigDetails =  + " " + e.eventStartTime + " - " + e.eventEndTime;
+        gigDay= e.eventDay;
+        gigTimes = e.eventStartTime + " - " + e.eventEndTime;
         if(gigsByVenue[e.eventVenue])
-          gigsByVenue[e.eventVenue].push({ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails})
+          gigsByVenue[e.eventVenue].push(
+            { 
+              key: e.key, 
+              gigTitle: gigTitle, 
+              gigDay: gigDay,
+              gigTimes: gigTimes
+            })
         else
-          gigsByVenue[e.eventVenue] = [{ key: e.key, gigTitle: gigTitle, gigDetails: gigDetails}]
+          gigsByVenue[e.eventVenue] = [
+            { 
+              key: e.key, 
+              gigTitle: gigTitle, 
+              gigDay: gigDay,
+              gigTimes: gigTimes
+            }
+          ]
       })
 
       var accordianViewVenues = [];

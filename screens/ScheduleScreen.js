@@ -66,7 +66,13 @@ class ScheduleScreen extends React.Component {
               color: '#1D6292',
               style: styles.infoIcon
             }}
-            title={<Text style={{fontWeight: 'bold'}}>{event.gigTitle}<Text style={{fontWeight: 'normal'}}>, {event.gigDetails}</Text></Text> }
+            title={
+              <Text style={{fontWeight: 'bold'}}>{event.gigTitle}
+                <Text style={{fontWeight: 'normal'}}>, </Text>
+                  <Text style={{fontWeight: 'normal', color: 'darkorange'}}>{event.gigTimes}</Text>
+                  <Text style={{fontWeight: 'normal', color: 'black'}}> @ </Text>
+                  <Text style={{fontWeight: 'normal', color: 'dodgerblue'}}>{event.gigVenue}</Text>
+              </Text> }
             bottomDivider={true}
             onPress={()=> this.showEvent(this.props.dbjab.eventData[event.key].eventDescription)}
         /> )
