@@ -40,7 +40,7 @@ class App extends React.Component {
   loadNews() {
     return new Promise((resolve, reject) => {
       var wp = new wpAPI({ endpoint: 'http://www.dannyboyjazzandblues.com/wp-json' })
-      wp.posts()
+      wp.posts().categories( 3 )
       .param( 'after', new Date( '2019-01-01' ) )
       .then( list => {
         store.dispatch(getPosts(list))
