@@ -3,7 +3,7 @@ import stripHtml from 'string-strip-html';
 import moment from 'moment';
 
 //var triggerDate = "2018-06-09T23:30:00";
-const festivalStartDate = "2019-06-03"
+const festivalStartDate = "2019-06-13"
 
 const imageReductionPercantage=20;
 

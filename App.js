@@ -77,6 +77,7 @@ class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
+        require('./assets/images/2019_App_Header_1200x600.png'),
         require('./assets/images/DannyBoyHome.png'),
         require('./assets/images/dbjabBackground.png'),
         require('./assets/images/oops.png'),

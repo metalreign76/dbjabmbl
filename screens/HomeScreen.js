@@ -69,7 +69,7 @@ class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../assets/images/DannyBoyHome.png')}
+          source={require('../assets/images/2019_App_Header_1200x600.png')}
           style={styles.welcomeImage}
           containerStyle={styles.homeImageContainer}
         />

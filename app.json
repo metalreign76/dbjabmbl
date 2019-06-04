@@ -8,12 +8,12 @@
       "ios",
       "android"
     ],
-    "version": "3.0.0",
+    "version": "5.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/DannyBoy2019.png",
+    "icon": "./assets/images/DannyBoy2019r.png",
     "splash": {
       "image": "./assets/images/DannyBoy2019_Splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -28,7 +28,7 @@
     },
     "android": {
       "package": "com.dannyboyjazzandblues.dbjabmbl",
-      "versionCode": 3,
+      "versionCode": 5,
       "permissions": []
     },
     "description": "Mobile App to allow visitors to get information regarding The Danny Boy Jazz & Blues Festival held annually in Limavady"
