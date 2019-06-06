@@ -108,7 +108,7 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
       }
       var countOfOnNext = 0;
       var maxOnNext = 5;
-      var lastStartTime;
+      var lastStartTime, lastStartDay;
       var eventsOnNext = dekeyedList.filter(e => {
         if((moment().isBefore(e.eventStart)) 
           && 
@@ -125,9 +125,10 @@ const dbjabReducer = (state = INITIAL_STATE, action) => {
           countOfOnNext++;
           if(countOfOnNext <= maxOnNext) {
             lastStartTime = e.eventStartTime
+            lastStartDay = moment(e.eventStart).format('dddd');
             return true;
           } 
-          if(lastStartTime == e.eventStartTime) {
+          if((lastStartTime == e.eventStartTime)&&(lastStartDay == moment(e.eventStart).format('dddd'))) {
             return true;
           } 
         }
