@@ -79,6 +79,7 @@ class NewsScreen extends React.Component {
           />
           <WebView
             source={{ html: this.props.dbjab.newsSelectedItem}}
+            contentInset={{top: 10, left: 5, bottom: 10, right: 5}}
           />
         </Modal>
       </View>
