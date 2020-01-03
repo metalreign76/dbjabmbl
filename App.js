@@ -1,6 +1,8 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import { AppLoading } from 'expo';
+import * as Font from 'expo-font';
+import { Asset } from 'expo-asset'
 import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -11,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import { getEvents, resetEvents, problemWithEvents } from './actions/eventsAction';
 import wpAPI from 'wpapi'
 import { getPosts } from './actions/postsAction';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const getEventsAPI = 'https://5amdysgq4a.execute-api.eu-west-1.amazonaws.com/default/dbJabEvents';
@@ -72,18 +75,18 @@ class App extends React.Component {
         </Provider>
       );
     }
-  }
+  } 
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      Asset.loadAsync([
+      Asset.loadAsync([ 
         require('./assets/images/2019_App_Header_1200x600.png'),
         require('./assets/images/dbjabBackground.png'),
         require('./assets/images/oops.png'),
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font
+        ...Ionicons.font,
       }),
       this.loadEvents(),
       this.loadNews()

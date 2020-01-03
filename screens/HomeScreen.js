@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 import {
   Platform,
   Modal,
@@ -8,9 +8,9 @@ import {
   SectionList,
   ActivityIndicator,
   ImageBackground,
-  WebView,
   TouchableOpacity
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { Image,  Icon,  Button, ListItem } from 'react-native-elements';
 import axios from 'axios';
 import { connect } from 'react-redux';

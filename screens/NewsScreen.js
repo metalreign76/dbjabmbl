@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, WebView, ActivityIndicator, Platform } from 'react-native';
+import { Modal, ActivityIndicator, Platform } from 'react-native';
+import { WebView } from 'react-native-webview'
 import { TouchableOpacity, FlatList, Text, View, StyleSheet } from 'react-native';
 import { Icon, Image, Card, Overlay } from 'react-native-elements'
 import { connect } from 'react-redux';

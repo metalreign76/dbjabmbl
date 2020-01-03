@@ -30,6 +30,7 @@ removeImageSizes = (fullPost) => {
   var removeWidths = fullPost.replace(/width="[0-9]{2,4}" /g, "")
   var removeHeights = removeWidths.replace(/height="[0-9]{2,4}"/g, "")
   var removeSizes = removeHeights.replace(/sizes=".*"/g, "sizes=\"(max-width: 500px) 95vw\"")
+  console.log("FullPost", removeSizes);
   return removeSizes;
 }
 
